@@ -36,3 +36,5 @@ jobs:
       run: dotnet pack -p:PackageVersion=${{ env.PACKAGE_VERSION }} --configuration=Release
     - name: List
       run: ls -R
+    - name: show run id
+      run: echo ${{ github.run_id }}
