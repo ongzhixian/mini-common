@@ -24,10 +24,14 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore --configuration=Release
     - name: Echo
       run: echo ${{ secrets.NUGET_API_KEY }}
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Test command availability
       run: dotnet nuget list source
+    - name: Pack
+      run: dotnet pack -p:PackageVersion=1.0.${{ github.run_number }} --configuration=Release
+    - name: List
+      run: ls -R
