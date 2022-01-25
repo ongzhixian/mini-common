@@ -30,4 +30,4 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Test command availability
-      run: dotnet nuget
+      run: dotnet nuget list source
