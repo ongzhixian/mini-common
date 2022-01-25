@@ -43,3 +43,7 @@ jobs:
           name: .net-app
       - name: Deploy
         run: dotnet nuget push Mini.Common.*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      - name: Auth
+        run: dotnet nuget add source --username ongzhixian --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/ongzhixian/index.json"
+      - name: Deploy 2
+        run: dotnet nuget push Mini.Common.*.nupkg --source https://nuget.pkg.github.com/ongzhixian/index.json
