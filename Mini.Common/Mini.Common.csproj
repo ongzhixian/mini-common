@@ -5,6 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RepositoryUrl>https://github.com/ongzhixian/mini-common</RepositoryUrl>
+    <Description>Some common classes</Description>
+    <Authors>Ong Zhi Xian</Authors>
   </PropertyGroup>
 
 </Project>
