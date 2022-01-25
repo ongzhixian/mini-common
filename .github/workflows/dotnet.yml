@@ -29,11 +29,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Pack
-      run: dotnet pack -p:PackageVersion=${{ env.PACKAGE_VERSION }} --configuration=Release
-    - name: show run id
-      run: echo ${{ github.run_id }}
-    - name: show run id
-      run: echo ${{ env.DOTNET_ROOT }}
+      run: dotnet pack -p:PackageVersion=${{ env.PACKAGE_VERSION }} --configuration=Release -o ${{env.DOTNET_ROOT}}/myapp
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v2
       with:
