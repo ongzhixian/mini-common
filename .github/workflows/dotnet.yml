@@ -46,4 +46,4 @@ jobs:
       - name: Auth
         run: dotnet nuget add source --username ongzhixian --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/ongzhixian/index.json"
       - name: Deploy 2
-        run: dotnet nuget push Mini.Common.*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source github
+        run: dotnet nuget push Mini.Common.*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
