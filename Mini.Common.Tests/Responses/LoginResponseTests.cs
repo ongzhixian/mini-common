@@ -25,6 +25,6 @@ public class LoginResponseTests
         var toString = loginResponse.ToString();
 
         Assert.IsNotNull(toString);
-        Assert.AreEqual("Jwt:someJwt, ExpiryDateTime:12/31/9999 11:59:59 PM", toString);
+        Assert.AreEqual("Jwt:someJwt, ExpiryDateTime:9999-12-31T23:59:59", toString);
     }
 }

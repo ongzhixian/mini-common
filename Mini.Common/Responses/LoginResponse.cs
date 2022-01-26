@@ -8,6 +8,6 @@ public class LoginResponse
 
     public override string ToString()
     {
-        return $"Jwt:{Jwt}, ExpiryDateTime:{ExpiryDateTime}";
+        return $"Jwt:{Jwt}, ExpiryDateTime:{ExpiryDateTime:s}";
     }
 }
