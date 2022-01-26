@@ -21,6 +21,7 @@ public class JwtSettingTests
     }
 
     //[ExpectedException(typeof(InvalidDataException))]
+    [ExcludeFromCodeCoverage]
     [TestMethod()]
     public void EnsureIsValidIssuerEmptyTest()
     {
@@ -32,6 +33,7 @@ public class JwtSettingTests
         Assert.AreEqual("Issuer is null or whitespace.", ex.Message);
     }
 
+    [ExcludeFromCodeCoverage]
     [TestMethod()]
     public void EnsureIsValidAudienceEmptyTest()
     {
