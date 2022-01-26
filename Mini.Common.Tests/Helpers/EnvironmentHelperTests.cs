@@ -16,6 +16,7 @@ namespace Mini.Common.Helpers.Tests
             Assert.AreEqual<string>("someValue", someValue);
         }
 
+        [ExcludeFromCodeCoverage]
         [TestMethod()]
         public void GetVariableNullTest()
         {
