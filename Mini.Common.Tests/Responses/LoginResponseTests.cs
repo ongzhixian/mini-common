@@ -22,6 +22,8 @@ public class LoginResponseTests
     [TestMethod()]
     public void ToStringTest()
     {
+        loginResponse = new LoginResponse("someJwt", DateTime.MaxValue);
+
         var toString = loginResponse.ToString();
 
         Assert.IsNotNull(toString);

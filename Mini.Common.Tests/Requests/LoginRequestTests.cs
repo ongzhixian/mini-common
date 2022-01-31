@@ -6,7 +6,7 @@ namespace Mini.Common.Tests.Requests;
 [TestClass()]
 public class LoginRequestTests
 {
-    LoginRequest loginRequest = new();
+    private LoginRequest loginRequest = new();
 
     [TestInitialize]
     public void BeforeEachTest()
@@ -16,11 +16,14 @@ public class LoginRequestTests
             Username = "someUsername",
             Password = "somePassword"
         };
+        
     }
 
     [TestMethod()]
     public void ToStringTest()
     {
+        loginRequest = new LoginRequest("someUsername", "somePassword");
+
         string toString = loginRequest.ToString();
 
         Assert.IsNotNull(toString);
