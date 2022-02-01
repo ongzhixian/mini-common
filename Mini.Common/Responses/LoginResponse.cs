@@ -1,9 +1,11 @@
-﻿namespace Mini.Common.Responses;
+﻿using Mini.Common.Models;
 
-public readonly record struct LoginResponse(string Jwt, DateTime ExpiryDateTime)
+namespace Mini.Common.Responses;
+
+public readonly record struct LoginResponse(string Jwt, DateTime ExpiryDateTime, SecurityCredential? Signing = null)
 {
     public override string ToString() =>
-        $"Jwt:{Jwt}, ExpiryDateTime:{ExpiryDateTime:s}";
+        $"Jwt:{Jwt}, ExpiryDateTime:{ExpiryDateTime:s}, Signing:{Signing}";
 }
 
 #pragma warning disable S125 // Sections of code should not be commented out
@@ -71,6 +73,15 @@ public readonly struct LoginResponse
     public override string ToString() =>
         $"Jwt:{Jwt}, ExpiryDateTime:{ExpiryDateTime:s}";
 }
+
+Original version
+
+public readonly record struct LoginResponse(string Jwt, DateTime ExpiryDateTime)
+{
+    public override string ToString() =>
+        $"Jwt:{Jwt}, ExpiryDateTime:{ExpiryDateTime:s}";
+}
+
 
 */
 #pragma warning restore S125 // Sections of code should not be commented out

@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Mini.Common.Models;
 using Mini.Common.Requests;
 
 namespace Mini.Common.Tests.Requests;
@@ -14,7 +16,13 @@ public class LoginRequestTests
         loginRequest = new LoginRequest()
         {
             Username = "someUsername",
-            Password = "somePassword"
+            Password = "somePassword",
+            Encrypting = new SecurityCredential
+            {
+                SecurityAlgorithm = SecurityAlgorithms.RsaOAEP,
+                SecurityDigest = SecurityAlgorithms.Aes256CbcHmacSha512,
+                Xml = "someXml"
+            }
         };
         
     }
@@ -22,12 +30,17 @@ public class LoginRequestTests
     [TestMethod()]
     public void ToStringTest()
     {
-        loginRequest = new LoginRequest("someUsername", "somePassword");
+        loginRequest = new LoginRequest("someUsername", "somePassword", new SecurityCredential
+        {
+            SecurityAlgorithm = SecurityAlgorithms.RsaOAEP,
+            SecurityDigest = SecurityAlgorithms.Aes256CbcHmacSha512,
+            Xml = "someXml"
+        });
 
         string toString = loginRequest.ToString();
 
         Assert.IsNotNull(toString);
-        Assert.AreEqual("Username:someUsername, Password:somePassword", toString);
+        Assert.AreEqual("Username:someUsername, Password:************, Encrypting:SecurityAlgorithm:RSA-OAEP, SecurityDigest:A256CBC-HS512, Xml:someXml", toString);
 
     }
 }
