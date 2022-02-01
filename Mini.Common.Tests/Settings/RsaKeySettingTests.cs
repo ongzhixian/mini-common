@@ -75,7 +75,7 @@ public class RsaKeySettingTests
         rsaKeySetting = new()
         {
             SourceType = RsaKeySetting.RsaKeyDataSource.EnvironmentVariable
-            , Source = "SOME_PRIVATE_KEY"
+            , Source = "MISSING_PRIVATE_KEY"
         };
 
         Assert.AreEqual(String.Empty, rsaKeySetting.RsaXml());
