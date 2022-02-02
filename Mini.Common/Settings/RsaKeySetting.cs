@@ -18,8 +18,11 @@ public record class RsaKeySetting
             rsaXml = Environment.GetEnvironmentVariable(Source) ?? rsaXml;
         }
 
-        if (SourceType == RsaKeyDataSource.File && File.Exists(Source))
+        if (SourceType == RsaKeyDataSource.File)
         {
+            if (!File.Exists(Source))
+                throw new FileNotFoundException("File not found", Source);
+
             rsaXml = File.ReadAllText(Source);
         }
 

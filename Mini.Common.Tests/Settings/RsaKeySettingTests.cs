@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mini.Common.Settings;
@@ -95,4 +96,21 @@ public class RsaKeySettingTests
         Assert.AreEqual(rsaSecurityKey.PrivateKeyStatus, PrivateKeyStatus.DoesNotExist);
     }
 
+    [TestMethod()]
+    public void GetRsaSecurityKeyFileNotExistsTest()
+    {
+        rsaKeySetting = new()
+        {
+            SourceType = RsaKeySetting.RsaKeyDataSource.File
+            ,
+            Source = "_missing/UnitTest-PrivateKey.xml"
+        };
+
+        FileNotFoundException? ex = 
+            Assert.ThrowsException<FileNotFoundException>(() => rsaKeySetting.GetRsaSecurityKey(false));
+
+        Assert.IsNotNull(ex);
+        Assert.AreEqual("File not found", ex.Message);
+        Assert.AreEqual("_missing/UnitTest-PrivateKey.xml", ex.FileName);
+    }
 }
