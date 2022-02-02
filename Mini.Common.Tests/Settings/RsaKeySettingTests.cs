@@ -87,7 +87,7 @@ public class RsaKeySettingTests
         rsaKeySetting = new()
         {
             SourceType = RsaKeySetting.RsaKeyDataSource.File
-            , Source = "_Data/UnitTest-PrivateKey.xml"
+            , Source = "_data/UnitTest-PrivateKey.xml"
         };
 
         RsaSecurityKey rsaSecurityKey = rsaKeySetting.GetRsaSecurityKey(false);
