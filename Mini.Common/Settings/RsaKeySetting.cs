@@ -33,7 +33,7 @@ public record class RsaKeySetting
     {
         using RSA rsa = RSA.Create();
 
-        rsa.FromXmlString(this.RsaXml());
+        rsa.FromXmlString(RsaXml());
 
         return new RsaSecurityKey(rsa.ExportParameters(withPrivateParameters));
     }

@@ -88,7 +88,7 @@ public class RsaKeySettingTests
         rsaKeySetting = new()
         {
             SourceType = RsaKeySetting.RsaKeyDataSource.File
-            , Source = "_data/UnitTest-PrivateKey.xml"
+            , Source = "_Data/UnitTest-PrivateKey.xml"
         };
 
         RsaSecurityKey rsaSecurityKey = rsaKeySetting.GetRsaSecurityKey(false);
@@ -96,21 +96,22 @@ public class RsaKeySettingTests
         Assert.AreEqual(rsaSecurityKey.PrivateKeyStatus, PrivateKeyStatus.DoesNotExist);
     }
 
+    [ExcludeFromCodeCoverage]
     [TestMethod()]
     public void GetRsaSecurityKeyFileNotExistsTest()
     {
         rsaKeySetting = new()
         {
             SourceType = RsaKeySetting.RsaKeyDataSource.File
-            ,
-            Source = "_missing/UnitTest-PrivateKey.xml"
+            , Source = "_missing/UnitTest-PrivateKey.xml"
         };
 
-        FileNotFoundException? ex = 
-            Assert.ThrowsException<FileNotFoundException>(() => rsaKeySetting.GetRsaSecurityKey(false));
+        FileNotFoundException ex = Assert.ThrowsException<FileNotFoundException>(() => 
+            rsaKeySetting.GetRsaSecurityKey(false));
 
         Assert.IsNotNull(ex);
         Assert.AreEqual("File not found", ex.Message);
         Assert.AreEqual("_missing/UnitTest-PrivateKey.xml", ex.FileName);
     }
+
 }
