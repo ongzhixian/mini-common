@@ -1,22 +1,28 @@
-﻿using System.Security.Cryptography;
+﻿using System.Net.Http;
+using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Mini.Common.Settings;
 
 public record class RsaKeySetting
 {
-    HttpClient httpClient;
-
-    public RsaKeySetting(HttpClient httpClient)
-    {
-        this.httpClient = httpClient;
-    }
-
     public RsaKeyDataSource SourceType { get; init; } = RsaKeyDataSource.Unknown;
 
     public string Source { get; init; } = string.Empty;
 
-    private async Task<string> SourceXmlAsync()
+    private readonly HttpClient httpClient;
+
+    public RsaKeySetting()
+    {
+        httpClient = new HttpClient();
+    }
+
+    public RsaKeySetting(HttpClient? httpClient)
+    {
+        this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    }
+
+    public async Task<string> SourceXmlAsync()
     {
         string rsaXml = string.Empty;
 
@@ -25,17 +31,14 @@ public record class RsaKeySetting
             rsaXml = Environment.GetEnvironmentVariable(Source) ?? rsaXml;
         }
 
-        if (SourceType == RsaKeyDataSource.File)
+        if (SourceType == RsaKeyDataSource.File && File.Exists(Source))
         {
-            if (!File.Exists(Source))
-                throw new FileNotFoundException("File not found", Source);
-
             rsaXml = File.ReadAllText(Source);
         }
 
         if (SourceType == RsaKeyDataSource.Http)
         {
-            rsaXml = await httpClient.GetStringAsync(Source);
+            rsaXml = await this.httpClient.GetStringAsync(Source);
         }
 
         return rsaXml;
