@@ -5,11 +5,18 @@ namespace Mini.Common.Settings;
 
 public record class RsaKeySetting
 {
-    public RsaKeyDataSource SourceType { get; init; } = RsaKeyDataSource.Default;
+    HttpClient httpClient;
+
+    public RsaKeySetting(HttpClient httpClient)
+    {
+        this.httpClient = httpClient;
+    }
+
+    public RsaKeyDataSource SourceType { get; init; } = RsaKeyDataSource.Unknown;
 
     public string Source { get; init; } = string.Empty;
 
-    private string SourceXml()
+    private async Task<string> SourceXmlAsync()
     {
         string rsaXml = string.Empty;
 
@@ -26,32 +33,47 @@ public record class RsaKeySetting
             rsaXml = File.ReadAllText(Source);
         }
 
+        if (SourceType == RsaKeyDataSource.Http)
+        {
+            rsaXml = await httpClient.GetStringAsync(Source);
+        }
+
         return rsaXml;
     }
 
-    public RsaSecurityKey GetRsaSecurityKey(bool withPrivateParameters)
+    public void EnsureIsValid()
+    {
+        if (SourceType == RsaKeyDataSource.Unknown)
+            throw new InvalidOperationException("SourceType is unknown");
+
+        if (string.IsNullOrWhiteSpace(Source))
+            throw new InvalidOperationException("Source is null or whitespace");
+    }
+
+    public async Task<RsaSecurityKey> GetRsaSecurityKeyAsync(bool withPrivateParameters)
     {
         using RSA rsa = RSA.Create();
 
-        rsa.FromXmlString(SourceXml());
+        rsa.FromXmlString(await SourceXmlAsync());
 
         return new RsaSecurityKey(rsa.ExportParameters(withPrivateParameters));
     }
 
-    public string GetRsaSecurityKeyXml(bool withPrivateParameters)
+    public async Task<string> GetRsaSecurityKeyXmlAsync(bool withPrivateParameters)
     {
         using RSA rsa = RSA.Create();
 
-        rsa.FromXmlString(SourceXml());
+        rsa.FromXmlString(await SourceXmlAsync());
 
         return rsa.ToXmlString(withPrivateParameters);
     }
 
     public enum RsaKeyDataSource
     {
-        Default = 0,
+        Unknown = 0,
         EnvironmentVariable = 1,
-        File = 2
+        File = 2,
+        Http = 3
     }
 }
 
