@@ -9,7 +9,7 @@ public record class RsaKeySetting
 
     public string Source { get; init; } = string.Empty;
 
-    public string RsaXml()
+    private string SourceXml()
     {
         string rsaXml = string.Empty;
 
@@ -33,9 +33,18 @@ public record class RsaKeySetting
     {
         using RSA rsa = RSA.Create();
 
-        rsa.FromXmlString(RsaXml());
+        rsa.FromXmlString(SourceXml());
 
         return new RsaSecurityKey(rsa.ExportParameters(withPrivateParameters));
+    }
+
+    public string GetRsaSecurityKeyXml(bool withPrivateParameters)
+    {
+        using RSA rsa = RSA.Create();
+
+        rsa.FromXmlString(SourceXml());
+
+        return rsa.ToXmlString(withPrivateParameters);
     }
 
     public enum RsaKeyDataSource
