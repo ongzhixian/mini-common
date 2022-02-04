@@ -55,6 +55,42 @@ public class PkedService : IPkedService
         return new EncryptedMessage(iv, encryptedSessionKey, encryptedMessage);
     }
 
+    public async Task<EncryptedMessage> EncryptAsync<T>(T data, string encryptionKeyName, string enclosedPublicKeyName)
+    {
+        RsaKeySetting recepRsaKeySetting = rsaKeySettingOptions.Get(encryptionKeyName);
+        RsaKeySetting myPublicKeySetting = rsaKeySettingOptions.Get(enclosedPublicKeyName);
+
+        using RSA rsaKey = RSA.Create();
+        using Aes aes = Aes.Create();
+        using MemoryStream cipherBytes = new();
+        using CryptoStream cryptoStream = new(cipherBytes, aes.CreateEncryptor(), CryptoStreamMode.Write);
+        rsaKey.FromXmlString(await recepRsaKeySetting.GetRsaSecurityKeyXmlAsync(false));
+
+        RSAOAEPKeyExchangeFormatter keyFormatter = new(rsaKey);
+
+        byte[] encryptedSessionKey = keyFormatter.CreateKeyExchange(aes.Key, typeof(Aes));
+
+        byte[] iv = aes.IV;
+
+        // Encrypt the message
+        
+        PublicKeyEnclosedData<T> envelope = new PublicKeyEnclosedData<T>(data, await myPublicKeySetting.GetRsaSecurityKeyXmlAsync(false));
+
+        string jsonData = JsonSerializer.Serialize(envelope);
+
+        byte[] jsonDataBytes = Encoding.UTF8.GetBytes(jsonData);
+
+        cryptoStream.Write(jsonDataBytes, 0, jsonDataBytes.Length);
+
+        cryptoStream.FlushFinalBlock();
+
+        cryptoStream.Close();
+
+        byte[] encryptedMessage = cipherBytes.ToArray();
+
+        return new EncryptedMessage(iv, encryptedSessionKey, encryptedMessage);
+    }
+
     public async Task<T?> DecryptAsync<T>(EncryptedMessage message, string encryptionKeyName)
     {
         RsaKeySetting recepRsaKeySetting = rsaKeySettingOptions.Get(encryptionKeyName);
@@ -82,4 +118,12 @@ public class PkedService : IPkedService
         return JsonSerializer.Deserialize<T>(jsonData);
 
     }
+}
+
+public record struct PublicKeyEnclosedData<T>(T Data, string PublicKeyXml)
+{
+    //DataType = typeof(T).ToString(),
+    //DataContent = data,
+    //PublicKeyXml = "somepublicKeyXml",
+
 }
