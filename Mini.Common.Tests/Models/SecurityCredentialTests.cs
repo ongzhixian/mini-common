@@ -1,43 +1,35 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mini.Common.Models;
 
 namespace Mini.Common.Tests.Models;
 
-//internal class SecurityCredentialTests
-//{
-//}
-
-
 [TestClass()]
-public class SecurityCredentialTests
+public class EncryptedMessageTests
 {
-    private SecurityCredential securityCredential = new();
+    private EncryptedMessage encryptedMessage = new(
+        Encoding.UTF8.GetBytes("someIV"),
+        Encoding.UTF8.GetBytes("someEncryptedSessionKey"),
+        Encoding.UTF8.GetBytes("someEncryptedMessageBytes")
+        );
 
     [TestInitialize]
     public void BeforeEachTest()
     {
-        securityCredential = new SecurityCredential
+        encryptedMessage = new EncryptedMessage
         {
-            SecurityAlgorithm = "someSecurityAlgorithm",
-            SecurityDigest = "someSecurityDigest",
-            Xml = "someXml"
+            IV = Encoding.UTF8.GetBytes("someIV"),
+            EncryptedSessionKey = Encoding.UTF8.GetBytes("someEncryptedSessionKey"),
+            EncryptedMessageBytes = Encoding.UTF8.GetBytes("someEncryptedMessageBytes"),
         };
-
     }
 
     [TestMethod()]
     public void ToStringTest()
     {
-        securityCredential = new SecurityCredential(
-            "someSecurityAlgorithm",
-            "someSecurityDigest",
-            "someXml"
-        ); 
-
-        string toString = securityCredential.ToString();
+        string toString = encryptedMessage.ToString();
 
         Assert.IsNotNull(toString);
-        Assert.AreEqual("SecurityAlgorithm:someSecurityAlgorithm, SecurityDigest:someSecurityDigest, Xml:someXml", toString);
-
+        Assert.AreEqual("IV:6, EncryptedSessionKey:23, EncryptedMessageBytes:25", toString);
     }
 }
