@@ -3,11 +3,6 @@ using Mini.Common.Models;
 
 namespace Mini.Common.Tests.Models;
 
-//internal class SecurityCredentialTests
-//{
-//}
-
-
 [TestClass()]
 public class SecurityCredentialTests
 {

@@ -5,9 +5,6 @@ using Mini.Common.Services;
 using Mini.Common.Settings;
 using Moq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -16,7 +13,7 @@ namespace Mini.Common.Tests.Services
     [TestClass()]
     public class PkedServiceTests
     {
-        private Mock<IOptionsSnapshot<RsaKeySetting>> rsaKeySettingOptions = new Mock<IOptionsSnapshot<RsaKeySetting>>();
+        private Mock<IOptionsSnapshot<RsaKeySetting>> rsaKeySettingOptions = new();
 
 
         [TestInitialize]
@@ -28,7 +25,7 @@ namespace Mini.Common.Tests.Services
         [TestMethod()]
         public void PkedServiceTest()
         {
-            PkedService pkedService = new PkedService(rsaKeySettingOptions.Object);
+            PkedService pkedService = new(rsaKeySettingOptions.Object);
 
             Assert.IsNotNull(pkedService);
         }
@@ -39,7 +36,7 @@ namespace Mini.Common.Tests.Services
             Environment.SetEnvironmentVariable("TEST_ENCRYPT_PUBLIC_KEY",
                 @"<RSAKeyValue><Modulus>nynqKp7ayQ2fubvjdG2RnVN2NHwDVphSOeRV4h0d8vXhZLX3z7YfSfQYnDtkudqUr4ZJBnCnZuudZmCCX4hoGGDkC8DeA8GGi8wzMMOdyi8t/chYidgl3MX44xYdl2YslncAcUaRtrpVrY9/ZLc2EnPvI3xwSZUdLcjSc9myi46ZnfuZ87TRFHvhGyQIDvUaOfxrB/+5C3VutgNsUHFAbwsvCWFyMMXjXnxpLfkOONi+DVgf02mvblqRKWFqUDnjM2062RhlXRCg9dJKSsknyIF8/dPzCwW9aEG9IqdNWzpXfqIghwYiXt42PQhNcCiLboRGMvKJC4V3Dp4DUIVyQQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>");
 
-            RsaKeySetting recepRsaKeySetting = new RsaKeySetting()
+            RsaKeySetting recepRsaKeySetting = new()
             {
                 SourceType = RsaKeySetting.RsaKeyDataSource.EnvironmentVariable,
                 Source = "TEST_ENCRYPT_PUBLIC_KEY"
@@ -47,7 +44,7 @@ namespace Mini.Common.Tests.Services
 
             rsaKeySettingOptions.Setup(m => m.Get("someEncryptionKeyName")).Returns(recepRsaKeySetting);
 
-            PkedService pkedService = new PkedService(rsaKeySettingOptions.Object);
+            PkedService pkedService = new(rsaKeySettingOptions.Object);
 
             EncryptedMessage result = await pkedService.EncryptAsync("someData", "someEncryptionKeyName");
 
@@ -63,7 +60,7 @@ namespace Mini.Common.Tests.Services
             EncryptedMessage encryptedMessage = JsonSerializer.Deserialize<EncryptedMessage>(
                 "{\"IV\":\"AV+qQoGj8FKOYlzUm9XKUg==\",\"EncryptedSessionKey\":\"ezFx+HC59WZ+4AtsZ3KVxHrNX422Ng9HO9wm7C9LqIdariJzL0rcpg4ef2RhZg8YyB2y9rIUEqGUy3j0o1EK6Tt2um92zKFNJRpAOR5q6lz7HpZCB5HdoIpt3L9711MJdy0c51MKM5pQpMCtjLYxWkfDtAJz7FKKN+h+WFPSl3BRt3j3phCqkNm494Nr0i2UiH74UCONweFlzmlE02bjrM9YvU7gUJezCp4ckte1c0mEw7m48rVNBNIGDtdPi0jrbLl2lTUpfJbX/KrknxTpXgf8uY6Q1Av6uXIA9RWxizZ1tbSb//a68tvbZcaJRq886hLWHxXqVy+dESVviaasBQ==\",\"EncryptedMessageBytes\":\"xI7IfMvuy0n1ETr+tJjNTQ==\"}");
 
-            RsaKeySetting recepRsaKeySetting = new RsaKeySetting()
+            RsaKeySetting recepRsaKeySetting = new()
             {
                 SourceType = RsaKeySetting.RsaKeyDataSource.EnvironmentVariable,
                 Source = "TEST_DECRYPT_PRIVATE_KEY"
@@ -71,9 +68,9 @@ namespace Mini.Common.Tests.Services
 
             rsaKeySettingOptions.Setup(m => m.Get("someEncryptionKeyName")).Returns(recepRsaKeySetting);
 
-            PkedService pkedService = new PkedService(rsaKeySettingOptions.Object);
+            PkedService pkedService = new(rsaKeySettingOptions.Object);
 
-            string result = await pkedService.DecryptAsync<string>(encryptedMessage, "someEncryptionKeyName");
+            string? result = await pkedService.DecryptAsync<string>(encryptedMessage, "someEncryptionKeyName");
 
             Assert.IsNotNull(result);
             Assert.AreEqual("someData", result);
