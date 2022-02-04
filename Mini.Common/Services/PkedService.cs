@@ -7,7 +7,13 @@ using Mini.Common.Settings;
 
 namespace Mini.Common.Services;
 
-public class PkedService
+public interface IPkedService
+{
+    Task<T?> DecryptAsync<T>(EncryptedMessage message, string encryptionKeyName);
+    Task<EncryptedMessage> EncryptAsync<T>(T data, string encryptionKeyName);
+}
+
+public class PkedService : IPkedService
 {
     private readonly IOptionsSnapshot<RsaKeySetting> rsaKeySettingOptions;
 

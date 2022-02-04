@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mini.Common.Models;
+using Mini.Common.Requests;
 using Mini.Common.Services;
 using Mini.Common.Settings;
 using Moq;
@@ -15,6 +17,11 @@ namespace Mini.Common.Tests.Services
     {
         private Mock<IOptionsSnapshot<RsaKeySetting>> rsaKeySettingOptions = new();
 
+        private readonly string encryptingKeyPublicXml = @"
+<RSAKeyValue>
+<Modulus>1GRNR0E6q83gpXWMsS8Np5AkjcIu8zFmP4LYxwrJDSiftI2DolNyRkf1fPdC6BnEWgL9ZDkGwbS8uPvqSuOfat5NpAoozsDoGbnqnsgxS4f9esIX01HlD1FElPEZEJMlrMYdUdo5kOSG6chNPIk8MLJxoCoSDGf98KYr+CmREw6itUkULELK0RcqRkYaJfe636Koi4cUbICfqsLvOnnJYsm8GNIQbm4tjrxt/lYGsyGHAE2bvDYlSV9rPml/AM7uNc74MW6Xs9Vxs2gIybttC6NfS/i9o+whi4+kRnQUIonMIVgSGTdQO2CitoZ+jswaPDH8g6JmvKmTyTHZaIppyQ==</Modulus>
+<Exponent>AQAB</Exponent>
+</RSAKeyValue>";
 
         [TestInitialize]
         public void BeforeEachTest()
@@ -74,6 +81,37 @@ namespace Mini.Common.Tests.Services
 
             Assert.IsNotNull(result);
             Assert.AreEqual("someData", result);
+        }
+
+        [TestMethod()]
+        public async Task EncryptAsyncLoginRequestTestAsync()
+        {
+            Environment.SetEnvironmentVariable("TEST_ENCRYPT_PUBLIC_KEY",
+                @"<RSAKeyValue><Modulus>nynqKp7ayQ2fubvjdG2RnVN2NHwDVphSOeRV4h0d8vXhZLX3z7YfSfQYnDtkudqUr4ZJBnCnZuudZmCCX4hoGGDkC8DeA8GGi8wzMMOdyi8t/chYidgl3MX44xYdl2YslncAcUaRtrpVrY9/ZLc2EnPvI3xwSZUdLcjSc9myi46ZnfuZ87TRFHvhGyQIDvUaOfxrB/+5C3VutgNsUHFAbwsvCWFyMMXjXnxpLfkOONi+DVgf02mvblqRKWFqUDnjM2062RhlXRCg9dJKSsknyIF8/dPzCwW9aEG9IqdNWzpXfqIghwYiXt42PQhNcCiLboRGMvKJC4V3Dp4DUIVyQQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>");
+
+            RsaKeySetting recepRsaKeySetting = new()
+            {
+                SourceType = RsaKeySetting.RsaKeyDataSource.EnvironmentVariable,
+                Source = "TEST_ENCRYPT_PUBLIC_KEY"
+            };
+
+            rsaKeySettingOptions.Setup(m => m.Get("someEncryptionKeyName")).Returns(recepRsaKeySetting);
+
+            PkedService pkedService = new(rsaKeySettingOptions.Object);
+
+            EncryptedMessage result = await pkedService.EncryptAsync(new LoginRequest()
+            {
+                Username = "someUsername",
+                Password = "somePassword",
+                Encrypting = new SecurityCredential
+                {
+                    SecurityAlgorithm = SecurityAlgorithms.RsaOAEP,
+                    SecurityDigest = SecurityAlgorithms.Aes256CbcHmacSha512,
+                    Xml = encryptingKeyPublicXml
+                }
+            }, "someEncryptionKeyName");
+
+            Assert.IsNotNull(result);
         }
     }
 }
