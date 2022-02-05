@@ -74,7 +74,7 @@ public class PkedService : IPkedService
 
         // Encrypt the message
         
-        PublicKeyEnclosedData<T> envelope = new PublicKeyEnclosedData<T>(data, await myPublicKeySetting.GetRsaSecurityKeyXmlAsync(false));
+        PublicKeyEnclosedData<T> envelope = new(data, await myPublicKeySetting.GetRsaSecurityKeyXmlAsync(false));
 
         string jsonData = JsonSerializer.Serialize(envelope);
 

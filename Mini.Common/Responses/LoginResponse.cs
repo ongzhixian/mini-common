@@ -1,12 +1,11 @@
-﻿using System.Security.Claims;
-using Mini.Common.Models;
+﻿using Mini.Common.Models;
 
 namespace Mini.Common.Responses;
 
-public readonly record struct LoginResponse(string Jwt, DateTime ExpiryDateTime, ClaimsPrincipal? ClaimsPrincipal = null, SecurityCredential? Signing = null)
+public readonly record struct LoginResponse(string Jwt, DateTime ExpiryDateTime, SecurityCredential? Signing = null)
 {
     public override string ToString() =>
-        $"Jwt:{Jwt}, ExpiryDateTime:{ExpiryDateTime:s}, ClaimsPrincipal:{ClaimsPrincipal}, Signing:{Signing}";
+        $"Jwt:{Jwt}, ExpiryDateTime:{ExpiryDateTime:s}, Signing:{Signing}";
 }
 
 #pragma warning disable S125 // Sections of code should not be commented out
