@@ -1,4 +1,4 @@
-﻿namespace Mini.Wms.DataAbstraction.Models;
+﻿namespace Mini.Wms.Abstraction.Models;
 
 public interface IObject<T>
 {
