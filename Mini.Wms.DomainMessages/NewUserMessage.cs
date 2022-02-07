@@ -9,3 +9,5 @@ public interface INewUserMessage
 }
 
 public readonly record struct NewUserMessage(string Username, string FirstName, string LastName) : INewUserMessage;
+
+public readonly record struct UserRecord(string Username, string FirstName, string LastName);
