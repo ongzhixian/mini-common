@@ -6,7 +6,7 @@ public interface IObjectService<TKey, TObj>
 {
     Task AddAsync(TObj user, CancellationToken cancellationToken = default);
 
-    IEnumerable<TObj> All(CancellationToken cancellationToken = default);
+    Task<IEnumerable<TObj>> AllAsync(CancellationToken cancellationToken = default);
 
     Task<bool> DeleteAsync(TKey id, CancellationToken cancellationToken = default);
 
