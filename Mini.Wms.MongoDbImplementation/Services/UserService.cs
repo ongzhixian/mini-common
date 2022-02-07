@@ -16,12 +16,14 @@ public class UserService<T> : IUserService<T>
         this.userCollection = userCollection ?? throw new ArgumentNullException(nameof(userCollection));
     }
 
-    public async Task AddAsync(IUser<T> user
+    public async Task<IUser<T>> AddAsync(IUser<T> user
     , CancellationToken cancellationToken = default)
     {
         InsertOneOptions? insertOneOptions = null;
 
         await userCollection.InsertOneAsync(user, insertOneOptions, cancellationToken);
+
+        return user;
     }
 
     public async Task<IEnumerable<IUser<T>>> AllAsync(CancellationToken cancellationToken = default)
