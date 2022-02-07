@@ -15,4 +15,4 @@ public interface IObjectService<TKey, TObj>
     Task<TObj> UpdateAsync(TObj user, CancellationToken cancellationToken = default);
 }
 
-public interface IUserService<T> : IObjectService<T, IUser<T>> { }
+public interface IUserService<T> : IObjectService<T, IUser<T>> {}
