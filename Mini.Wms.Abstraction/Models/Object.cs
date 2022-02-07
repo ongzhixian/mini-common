@@ -2,7 +2,7 @@
 
 public interface IObject<T>
 {
-    T? Id { get; init; }
+    T? Id { get; set; }
     DateTime CreatedDateTime { get; init; }
     DateTime LastUpdatedDateTime { get; init; }
 }
