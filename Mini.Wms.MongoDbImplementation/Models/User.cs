@@ -5,7 +5,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Mini.Wms.MongoDbImplementation.Models;
 
-public record struct User : IUser<string>
+public readonly record struct User : IUser<string>
 {
     public string Username { get; init; } = string.Empty;
 
