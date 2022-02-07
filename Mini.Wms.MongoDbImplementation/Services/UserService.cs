@@ -16,7 +16,13 @@ public class UserService<T> : IUserService<T>
         this.userCollection = userCollection ?? throw new ArgumentException(nameof(userCollection));
     }
 
+    public async Task AddAsync(IUser<T> user
+    , CancellationToken cancellationToken = default)
+    {
+        InsertOneOptions? insertOneOptions = null;
 
+        await userCollection.InsertOneAsync(user, insertOneOptions, cancellationToken);
+    }
 
     public IEnumerable<IUser<T>> All(CancellationToken cancellationToken = default)
     {
@@ -33,19 +39,34 @@ public class UserService<T> : IUserService<T>
         //    Builders<IUser<T>>.Filter.Empty
         //    , findOptions
         //    , cancellationToken);
-        //return userCollection.Find(Builders<IUser<T>>.Filter.Empty).ToList();
+        return userCollection.Find(Builders<IUser<T>>.Filter.Empty).ToList();
 
     }
 
+    public async Task<bool> DeleteAsync(IUser<T> user
+    , CancellationToken cancellationToken = default)
+    {
+        FilterDefinition<IUser<T>> filter = Builders<IUser<T>>.Filter.Eq("_id", user.Id);
 
+        DeleteResult? deleteResult = await userCollection.DeleteOneAsync(filter, cancellationToken);
 
-    public async Task<IUser<T>> GetAsync(IUser<T> id
-        , FindOptions<IUser<T>, IUser<T>> findOptions
-        , CancellationToken cancellationToken = default)
+        return deleteResult.IsAcknowledged && deleteResult.DeletedCount <= 0;
+    }
+
+    public async Task<bool> DeleteAsync(T id, CancellationToken cancellationToken = default)
     {
         FilterDefinition<IUser<T>> filter = Builders<IUser<T>>.Filter.Eq("_id", id);
-        
-        //var findOptions = new FindOptions<IUser<T>, IUser<T>>();
+
+        DeleteResult? deleteResult = await userCollection.DeleteOneAsync(filter, cancellationToken);
+
+        return deleteResult.IsAcknowledged && deleteResult.DeletedCount <= 0;
+    }
+
+    public async Task<IUser<T>> GetAsync(T id, CancellationToken cancellationToken = default)
+    {
+        FilterDefinition<IUser<T>> filter = Builders<IUser<T>>.Filter.Eq("_id", id);
+
+        var findOptions = new FindOptions<IUser<T>, IUser<T>>();
 
         var cursor = await userCollection.FindAsync(filter, findOptions, cancellationToken);
 
@@ -54,29 +75,15 @@ public class UserService<T> : IUserService<T>
         return user;
     }
 
-    public async Task<DeleteResult> DeleteAsync(IUser<T> user
-    , CancellationToken cancellationToken = default)
-    {
-        FilterDefinition<IUser<T>> filter = Builders<IUser<T>>.Filter.Eq("_id", user.Id);
-        
-        DeleteResult? deleteResult = await userCollection.DeleteOneAsync(filter, cancellationToken);
-
-        return deleteResult;
-    }
-
-
     public async Task<IUser<T>> UpdateAsync(IUser<T> user
-        , FilterDefinition<IUser<T>> filterDefinition
-        , UpdateDefinition<IUser<T>> updateDefinition
-        , FindOneAndUpdateOptions<IUser<T>, IUser<T>> findOneAndUpdateOptions
         , CancellationToken cancellationToken = default)
     {
-        var filter = Builders<IUser<T>>.Filter.Eq(r => r.Id, user.Id);
-        var update = Builders<IUser<T>>.Update
+        var filterDefinition = Builders<IUser<T>>.Filter.Eq(r => r.Id, user.Id);
+        var updateDefinition = Builders<IUser<T>>.Update
             .Set(r => r.FirstName, user.FirstName)
             .Set(r => r.LastName, user.LastName);
 
-        var options = new FindOneAndUpdateOptions<IUser<T>, IUser<T>>()
+        var findOneAndUpdateOptions = new FindOneAndUpdateOptions<IUser<T>, IUser<T>>()
         {
         };
 
@@ -89,28 +96,5 @@ public class UserService<T> : IUserService<T>
         return updateResult;
 
     }
-
-    public async Task AddAsync(IUser<T> user
-        , InsertOneOptions? insertOneOptions = null
-        , CancellationToken cancellationToken = default)
-    {
-        await userCollection.InsertOneAsync(user, insertOneOptions, cancellationToken);
-    }
-
-    //void IObjectService<IUser<T>>.AddAsync(IUser<T> user, CancellationToken cancellationToken)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    //public async Task AddAsync(T user, CancellationToken cancellationToken = default)
-    //{
-    //    InsertOneOptions option = new InsertOneOptions
-    //    {
-
-    //    };
-
-    //    await userCollection.InsertOneAsync(user, option, cancellationToken);
-    //}
-
 
 }
