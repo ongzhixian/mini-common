@@ -4,7 +4,7 @@ namespace Mini.Wms.Abstraction.Services;
 
 public interface IObjectService<TKey, TObj>
 {
-    Task AddAsync(TObj user, CancellationToken cancellationToken = default);
+    Task<TObj> AddAsync(TObj user, CancellationToken cancellationToken = default);
 
     Task<IEnumerable<TObj>> AllAsync(CancellationToken cancellationToken = default);
 
