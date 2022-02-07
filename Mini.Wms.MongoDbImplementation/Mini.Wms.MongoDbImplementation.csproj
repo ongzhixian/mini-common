@@ -1,10 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Mini.Wms.Abstraction\Mini.Wms.Abstraction.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="Mini.Wms.Abstraction" Version="1.0.4" />
     <PackageReference Include="MongoDB.Driver" Version="2.14.1" />
   </ItemGroup>
 
