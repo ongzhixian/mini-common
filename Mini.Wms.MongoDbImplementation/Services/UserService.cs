@@ -21,7 +21,15 @@ public class UserService<T> : IUserService<T>
     {
         InsertOneOptions? insertOneOptions = null;
 
-        await userCollection.InsertOneAsync(user, insertOneOptions, cancellationToken);
+        try
+        {
+            await userCollection.InsertOneAsync(user, insertOneOptions, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+        
 
         return user;
     }
