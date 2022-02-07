@@ -13,7 +13,7 @@ public class UserService<T> : IUserService<T>
     public UserService(ILogger<UserService<T>> logger, IMongoCollection<IUser<T>> userCollection)
     {
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        this.userCollection = userCollection ?? throw new ArgumentException(nameof(userCollection));
+        this.userCollection = userCollection ?? throw new ArgumentNullException(nameof(userCollection));
     }
 
     public async Task AddAsync(IUser<T> user
