@@ -6,43 +6,13 @@ public interface IObjectService<TKey, TObj>
 {
     Task AddAsync(TObj user, CancellationToken cancellationToken = default);
 
-    void UpdateAsync(T user);
+    IEnumerable<TObj> All(CancellationToken cancellationToken = default);
 
-    void Delete(T user);
+    Task<bool> DeleteAsync(TKey id, CancellationToken cancellationToken = default);
 
-    T Get(T id);
+    Task<TObj> GetAsync(TKey id, CancellationToken cancellationToken = default);
 
-    IEnumerable<T> All();
+    Task<TObj> UpdateAsync(TObj user, CancellationToken cancellationToken = default);
 }
 
-public interface IUserService<T> : IObjectService<T, IUser<T>>
-{
-}
-
-public class UserService<T> : IUserService<T>
-{
-    public void Add(IUser<T> user)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Delete(IUser<T> user)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IUser<T> Get(IUser<T> id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IEnumerable<IUser<T>> All()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Update(IUser<T> user)
-    {
-        throw new NotImplementedException();
-    }
-}
+public interface IUserService<T> : IObjectService<T, IUser<T>> { }
