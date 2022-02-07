@@ -10,8 +10,8 @@ public readonly record struct AddUser
 
 public abstract record NewUser
 {
-    private string Username { get; init; } = string.Empty;
-    private string FirstName { get; init; } = string.Empty;
-    private string LastName { get; init; } = string.Empty;
+    public string Username { get; init; } = string.Empty;
+    public string FirstName { get; init; } = string.Empty;
+    public string LastName { get; init; } = string.Empty;
 
 }
