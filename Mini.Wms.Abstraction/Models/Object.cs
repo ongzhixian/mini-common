@@ -20,6 +20,13 @@ public interface IUser
     string Password { get; init; }
 }
 
+public class User : IUser
+{
+    public string Username { get; init; } = string.Empty;
+    public string FirstName { get; init; } = string.Empty;
+    public string LastName { get; init; } = string.Empty;
+    public string Password { get; init; } = string.Empty;
+}
 
 public interface ICustomer<T> : IDbObject<T>, ICustomer
 {
