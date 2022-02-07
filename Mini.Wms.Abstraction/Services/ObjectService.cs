@@ -16,4 +16,6 @@ public interface IObjectService<TKey, TObj>
 }
 
 public interface IUserService<T> : IObjectService<T, IUser<T>> 
-{ }
+{ 
+    
+}
