@@ -2,19 +2,17 @@
 
 namespace Mini.Wms.Abstraction.Services;
 
-public interface IObjectService<T>
+public interface IObjectService<TKey, TObj>
 {
-    void AddAsync(T user, CancellationToken cancellationToken = default);
+    Task AddAsync(TObj user, CancellationToken cancellationToken = default);
 
-    void UpdateAsync(T user);
+    IEnumerable<TObj> All(CancellationToken cancellationToken = default);
 
-    void Delete(T user);
+    Task<bool> DeleteAsync(TKey id, CancellationToken cancellationToken = default);
 
-    T Get(T id);
+    Task<TObj> GetAsync(TKey id, CancellationToken cancellationToken = default);
 
-    IEnumerable<T> All();
+    Task<TObj> UpdateAsync(TObj user, CancellationToken cancellationToken = default);
 }
 
-public interface IUserService<T> : IObjectService<IUser<T>>
-{
-}
+public interface IUserService<T> : IObjectService<T, IUser<T>> { }
