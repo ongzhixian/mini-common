@@ -1,4 +1,4 @@
-name: .NET
+name: wms-domainMessages
 
 env:
   DOTNET_VERSION: '6.0.100'           # set this to the .NET Core version to use
