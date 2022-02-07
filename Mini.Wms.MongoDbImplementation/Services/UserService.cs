@@ -24,7 +24,7 @@ public class UserService<T> : IUserService<T>
         await userCollection.InsertOneAsync(user, insertOneOptions, cancellationToken);
     }
 
-    public IEnumerable<IUser<T>> All(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<IUser<T>>> AllAsync(CancellationToken cancellationToken = default)
     {
         //FindOptions<IUser<T>> findOptions = null;
 
@@ -39,7 +39,10 @@ public class UserService<T> : IUserService<T>
         //    Builders<IUser<T>>.Filter.Empty
         //    , findOptions
         //    , cancellationToken);
-        return userCollection.Find(Builders<IUser<T>>.Filter.Empty).ToList();
+
+        var cursor = await userCollection.FindAsync(Builders<IUser<T>>.Filter.Empty, null, cancellationToken);
+
+        return await cursor.ToListAsync(cancellationToken);
 
     }
 
@@ -70,7 +73,7 @@ public class UserService<T> : IUserService<T>
 
         var cursor = await userCollection.FindAsync(filter, findOptions, cancellationToken);
 
-        var user = await cursor.FirstOrDefaultAsync();
+        var user = await cursor.FirstOrDefaultAsync(cancellationToken);
 
         return user;
     }
