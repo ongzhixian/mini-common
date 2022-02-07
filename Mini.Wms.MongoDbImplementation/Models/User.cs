@@ -23,7 +23,7 @@ public record class User : IUser<string>
     [JsonPropertyName("id")]
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; init; } = null;
+    public string? Id { get; set; } = null;
 
     //[JsonPropertyName("createdDateTime")]
     //[BsonElement("createdDateTime")]
