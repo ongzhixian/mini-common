@@ -5,7 +5,10 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Mini.Wms.MongoDbImplementation.Models;
 
-public readonly record struct User : IUser<string>
+// Note: MongoDb has trouble deserializing structs; so using record class instead.
+// See: https://stackoverflow.com/questions/14561809/deserialize-object-as-an-interface-with-mongodb-c-sharp-driver
+
+public record class User : IUser<string>
 {
     public string Username { get; init; } = string.Empty;
 
