@@ -27,6 +27,20 @@ public class UserService : IUserService<string, User>
 
     public async Task<IEnumerable<User>> AllAsync(CancellationToken cancellationToken = default)
     {
+        FilterDefinition<User>? filter = Builders<User>.Filter.Exists("i");
+
+        FilterDefinition<User>? fil = Builders<User>.Filter.Empty;
+        var finalFilter = Builders<User>.Filter.And(filter, fil);
+
+
+        var sort = Builders<User>.Sort.Descending("i");
+
+        FindOptions<User, User> options = new FindOptions<User, User>();
+        options.Sort = sort;
+        options.Limit = 100;
+        options.Skip = 0;
+        
+
         var cursor = await userCollection.FindAsync(Builders<User>.Filter.Empty, null, cancellationToken);
 
 
