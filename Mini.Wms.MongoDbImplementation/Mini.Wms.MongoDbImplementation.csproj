@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
@@ -16,6 +16,7 @@
     <RepositoryUrl>https://github.com/ongzhixian/mini-common</RepositoryUrl>
     <Description>MongoDB implementation of Mini.Wms.Abstraction</Description>
     <Authors>zx</Authors>
+    <UserSecretsId>b6e0e93e-77e5-4cb5-908d-e37798f2aee3</UserSecretsId>
   </PropertyGroup>
 
 </Project>

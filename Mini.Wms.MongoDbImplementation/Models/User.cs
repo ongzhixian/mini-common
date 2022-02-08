@@ -5,8 +5,9 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Mini.Wms.MongoDbImplementation.Models;
 
-// Note: MongoDb has trouble deserializing structs; so using record class instead.
+// Note: MongoDb has trouble deserializing structs and interface types; so using record class instead.
 // See: https://stackoverflow.com/questions/14561809/deserialize-object-as-an-interface-with-mongodb-c-sharp-driver
+
 
 public record class User : IUser<string>
 {
@@ -20,10 +21,10 @@ public record class User : IUser<string>
 
     public DateTime PasswordUpdatedDateTime { get; init; } = DateTime.MinValue;
 
-    [JsonPropertyName("id")]
+    //[JsonPropertyName("id")]
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; } = null;
+    public string? Id { get; init; } = null;
 
     //[JsonPropertyName("createdDateTime")]
     //[BsonElement("createdDateTime")]
