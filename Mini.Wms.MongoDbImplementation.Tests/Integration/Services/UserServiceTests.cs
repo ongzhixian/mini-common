@@ -17,47 +17,31 @@ public class UserServiceTests
         .AddUserSecrets(System.Reflection.Assembly.GetExecutingAssembly())
         .AddJsonFile("appsettings.json")
         .Build();
+    private readonly string miniToolsConnectionString;
+    private readonly string databaseName;
 
-    private Mock<ILogger<UserService>> mockLogger = new Mock<ILogger<UserService>>();
+    private Mock<ILogger<UserService>> mockLogger = new();
 
-    private IMongoClient mongoClient;
-    private IMongoDatabase database;
+    private readonly IMongoClient mongoClient;
+    private readonly IMongoDatabase database;
     private IMongoCollection<User> userCollection;
     private UserService? userService;
 
     public UserServiceTests()
     {
-        string miniToolsConnectionString = config["mongodb:minitools:ConnectionString"];
-        string databaseName = MongoUrl.Create(miniToolsConnectionString).DatabaseName;
+        miniToolsConnectionString = config["mongodb:minitools:ConnectionString"];
+        databaseName = MongoUrl.Create(miniToolsConnectionString).DatabaseName;
 
         mongoClient = new MongoClient(miniToolsConnectionString);
         database = mongoClient.GetDatabase(databaseName);
         userCollection = database.GetCollection<User>(typeof(User).Name);
     }
 
-    //[ClassInitialize]
-    //public async Task BeforeAllTestAsync()
-    //{
-    //    //var options = new CreateIndexOptions() { Unique = true };
-    //    //var field = new StringFieldDefinition<User>("Username");
-    //    //var indexDefinition = new IndexKeysDefinitionBuilder<User>().Ascending(field);
-    //    //CreateIndexModel<User> createIndexModel = new CreateIndexModel<User>(indexDefinition, options);
-    //    //var x = await userCollection.Indexes.CreateOneAsync(createIndexModel);
-    //}
-
     [TestInitialize]
     public void BeforeEachTest()
     {
         mockLogger = new Mock<ILogger<UserService>>();
-
-        string miniToolsConnectionString = config["mongodb:minitools:ConnectionString"];
-
-        string databaseName = MongoUrl.Create(miniToolsConnectionString).DatabaseName;
-
-        mongoClient = new MongoClient(miniToolsConnectionString);
-        database = mongoClient.GetDatabase(databaseName);
         userCollection = database.GetCollection<User>(typeof(User).Name);
-
     }
 
     [TestMethod()]
@@ -73,22 +57,16 @@ public class UserServiceTests
     {
         userService = new UserService(mockLogger.Object, userCollection);
 
-        // 6201bfe6be1eb4cc604fd8be
-        // 000000000000000000000000
-        //var oid = new MongoDB.Bson.ObjectId("000000000000000000000000");
-
-        User record = new User()
+        User newUser = new()
         {
-            
-            Id = "000000000000000000000000",
-            Username = "someUsername5",
-            FirstName = "someFirstName3",
-            LastName = "someLastName3"
+            Username = "someUsername",
+            FirstName = "someFirstName",
+            LastName = "someLastName"
         };
 
-        await userService.AddAsync(record);
+        await userService.AddAsync(newUser);
 
-        Assert.IsNotNull(record.Id);
+        Assert.IsNotNull(newUser.Id);
     }
 
 
@@ -105,6 +83,7 @@ public class UserServiceTests
     [TestMethod()]
     public async Task DeleteAsyncTestAsync()
     {
+        userService = new UserService(mockLogger.Object, userCollection);
 
         var result = await userService.DeleteAsync("000000000000000000000000");
 
@@ -127,18 +106,20 @@ public class UserServiceTests
     {
         userService = new UserService(mockLogger.Object, userCollection);
 
-        User record = new User()
+        User record = new()
         {
             Id = "000000000000000000000000",
-            Username = "someUsername3",
-            FirstName = "chgFirstName4",
-            LastName = "chgLastName4"
+            Username = "someUsername",
+            FirstName = "chgFirstName",
+            LastName = "chgLastName"
         };
 
         var result = await userService.UpdateAsync(record);
 
         Assert.IsNotNull(result);
         Assert.AreEqual("someUsername", result.Username);
+        Assert.AreEqual("chgFirstName", result.FirstName);
+        Assert.AreEqual("chgLastName", result.LastName);
     }
 
 }
