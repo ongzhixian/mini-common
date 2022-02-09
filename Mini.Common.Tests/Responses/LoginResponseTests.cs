@@ -30,12 +30,13 @@ public class LoginResponseTests
     [TestMethod()]
     public void ToStringTest()
     {
-        loginResponse = new LoginResponse("someJwt", DateTime.MaxValue, new SecurityCredential
-        {
-            SecurityAlgorithm = SecurityAlgorithms.RsaSsaPssSha256,
-            SecurityDigest = SecurityAlgorithms.RsaSsaPssSha256Signature,
-            Xml = "someXml"
-        });
+        loginResponse = new LoginResponse("someJwt", DateTime.MaxValue,
+            new SecurityCredential
+            {
+                SecurityAlgorithm = SecurityAlgorithms.RsaSsaPssSha256,
+                SecurityDigest = SecurityAlgorithms.RsaSsaPssSha256Signature,
+                Xml = "someXml"
+            });
 
         var toString = loginResponse.ToString();
 

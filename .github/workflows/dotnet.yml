@@ -24,6 +24,9 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore --configuration=Release
+    - name: List
+      run: ls -R
+
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration=Release
     - name: Pack
