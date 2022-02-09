@@ -21,9 +21,9 @@ public interface IPagedService<TObj>
     Task<PagedData<TObj>> PageAsync(PagedDataOptions pagedDataOptions, CancellationToken cancellationToken = default);
 }
 
-public interface IUserService<TKey, TObj> : 
+public interface IUserService<TKey, TObj> :
     IObjectService<TKey, TObj>,
     IPagedService<TObj>
-    where TObj : IUser<TKey> 
-{ 
+    where TObj : IUser<TKey>
+{
 }
