@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mini.Common.Settings;
+using Moq;
+using Moq.Protected;
 
 namespace Mini.Common.Tests.Settings;
 
@@ -29,15 +35,39 @@ public class RsaKeySettingTests
     }
 
     [TestMethod()]
-    public void RsaXmlTest()
+    public async Task RsaXmlTestAsync()
     {
-        var result = rsaKeySetting.RsaXml();
+        var result = await rsaKeySetting.SourceXmlAsync();
+
+    //    Assert.AreEqual(string.Empty, result);
+    }
+
+    [TestMethod()]
+    public async Task RsaXmlTestHttpAsync()
+    {
+        Mock<HttpMessageHandler> mockHttpMessageHandler = new();
+
+        mockHttpMessageHandler.Protected().Setup<Task<HttpResponseMessage>>(
+            "SendAsync",
+            ItExpr.IsAny<HttpRequestMessage>(),
+            ItExpr.IsAny<CancellationToken>()
+        )
+        .ReturnsAsync(new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent("<RSAKeyValue><Modulus>2R+FsrRjNC7xfOrRJyM2c1WQSUGFpxH2pWTJPKuAfnh/kZPkcwtvgHhf0RXrG33p2fDYP+qQJSsoLd8FkGo+ahKxvJL8ShrumcrJcVo2Tx3BNMT7kXZryDGqeuRMdCG3vXkiyp7E5A3CnozP1D1SM+vNuxxpGKqod9n8mVpPa7o6T2lM/qhjEyTmYJ+hsh35yQ9pxgQBGCwA4CJm6IxUuMB8DpAFe4z+CTeL+K8pk+isB+X/WdEhCqjOHvJ7NrUdOQ0HqMtFWt9s5oAss4ws5BTWuMbWdcPP60Wi7cw1SoMc7VCRZ8lAXKNblFEHzKhXRiYBlut/OeC9N7pl5VrdCQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>")
+        });
+
+        rsaKeySetting = new(new HttpClient(mockHttpMessageHandler.Object));
+
+        var result = await rsaKeySetting.SourceXmlAsync();
 
         Assert.AreEqual(string.Empty, result);
     }
 
+
     [TestMethod()]
-    public void GetRsaSecurityKeyEnvVarPublicKeyTest()
+    public async Task GetRsaSecurityKeyEnvVarPublicKeyTestAsync()
     {
         Environment.SetEnvironmentVariable("SOME_PRIVATE_KEY", privateKeyXml);
 
@@ -47,13 +77,13 @@ public class RsaKeySettingTests
             , Source = "SOME_PRIVATE_KEY"
         };
 
-        RsaSecurityKey rsaSecurityKey = rsaKeySetting.GetRsaSecurityKey(false);
+        RsaSecurityKey rsaSecurityKey = await rsaKeySetting.GetRsaSecurityKeyAsync(false);
 
         Assert.AreEqual(rsaSecurityKey.PrivateKeyStatus, PrivateKeyStatus.DoesNotExist);
     }
 
     [TestMethod()]
-    public void GetRsaSecurityKeyEnvVarPrivateKeyTest()
+    public async Task GetRsaSecurityKeyEnvVarPrivateKeyTestAsync()
     {
         Environment.SetEnvironmentVariable("SOME_PRIVATE_KEY", privateKeyXml);
 
@@ -64,13 +94,14 @@ public class RsaKeySettingTests
             Source = "SOME_PRIVATE_KEY"
         };
 
-        RsaSecurityKey rsaSecurityKey = rsaKeySetting.GetRsaSecurityKey(true);
+        RsaSecurityKey rsaSecurityKey = await rsaKeySetting.GetRsaSecurityKeyAsync(true);
 
         Assert.AreEqual(rsaSecurityKey.PrivateKeyStatus, PrivateKeyStatus.Exists);
     }
 
+    [ExcludeFromCodeCoverage]
     [TestMethod()]
-    public void GetRsaSecurityKeyEnvVarNotExistsTest()
+    public async Task GetRsaSecurityKeyEnvVarNotExistsTestAsync()
     {
         rsaKeySetting = new()
         {
@@ -78,11 +109,11 @@ public class RsaKeySettingTests
             , Source = "MISSING_PRIVATE_KEY"
         };
 
-        Assert.AreEqual(String.Empty, rsaKeySetting.RsaXml());
+        Assert.AreEqual(String.Empty, await rsaKeySetting.SourceXmlAsync());
     }
 
     [TestMethod()]
-    public void GetRsaSecurityKeyFileTest()
+    public async Task GetRsaSecurityKeyFileTestAsync()
     {
         rsaKeySetting = new()
         {
@@ -90,9 +121,96 @@ public class RsaKeySettingTests
             , Source = "_Data/UnitTest-PrivateKey.xml"
         };
 
-        RsaSecurityKey rsaSecurityKey = rsaKeySetting.GetRsaSecurityKey(false);
+        RsaSecurityKey rsaSecurityKey = await rsaKeySetting.GetRsaSecurityKeyAsync(false);
 
         Assert.AreEqual(rsaSecurityKey.PrivateKeyStatus, PrivateKeyStatus.DoesNotExist);
+    }
+
+    [TestMethod()]
+    public async Task GetRsaSecurityKeyHttpTestAsync()
+    {
+        Mock<HttpMessageHandler> mockHttpMessageHandler = new();
+        mockHttpMessageHandler.Protected().Setup<Task<HttpResponseMessage>>(
+            "SendAsync",
+            ItExpr.IsAny<HttpRequestMessage>(),
+            ItExpr.IsAny<CancellationToken>()
+        )
+        .ReturnsAsync(new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.OK,
+            Content = new StringContent("<RSAKeyValue><Modulus>2R+FsrRjNC7xfOrRJyM2c1WQSUGFpxH2pWTJPKuAfnh/kZPkcwtvgHhf0RXrG33p2fDYP+qQJSsoLd8FkGo+ahKxvJL8ShrumcrJcVo2Tx3BNMT7kXZryDGqeuRMdCG3vXkiyp7E5A3CnozP1D1SM+vNuxxpGKqod9n8mVpPa7o6T2lM/qhjEyTmYJ+hsh35yQ9pxgQBGCwA4CJm6IxUuMB8DpAFe4z+CTeL+K8pk+isB+X/WdEhCqjOHvJ7NrUdOQ0HqMtFWt9s5oAss4ws5BTWuMbWdcPP60Wi7cw1SoMc7VCRZ8lAXKNblFEHzKhXRiYBlut/OeC9N7pl5VrdCQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>")
+        });
+
+        rsaKeySetting = new(new HttpClient(mockHttpMessageHandler.Object))
+        {
+            SourceType = RsaKeySetting.RsaKeyDataSource.Http
+            , Source = "https://localhost:5001/api/PublicKey/sign"
+        };
+
+        RsaSecurityKey rsaSecurityKey = await rsaKeySetting.GetRsaSecurityKeyAsync(false);
+
+        Assert.AreEqual(rsaSecurityKey.PrivateKeyStatus, PrivateKeyStatus.DoesNotExist);
+    }
+
+    [ExcludeFromCodeCoverage]
+    [TestMethod()]
+    public void GetRsaSecurityKeyNullHttpClientTest()
+    {
+        var ex = Assert.ThrowsException<ArgumentNullException>(() => new RsaKeySetting(null));
+
+        Assert.IsNotNull(ex);
+        Assert.AreEqual("Value cannot be null. (Parameter 'httpClient')", ex.Message);
+    }
+
+    [TestMethod()]
+    public async Task GetRsaSecurityKeyXmlAsyncTestAsync()
+    {
+        Environment.SetEnvironmentVariable("SOME_PRIVATE_KEY", privateKeyXml);
+
+        rsaKeySetting = new()
+        {
+            SourceType = RsaKeySetting.RsaKeyDataSource.EnvironmentVariable
+            , Source = "SOME_PRIVATE_KEY"
+        };
+
+        rsaKeySetting.EnsureIsValid();
+
+        var xml = await rsaKeySetting.GetRsaSecurityKeyXmlAsync(false);
+
+        Assert.AreEqual("<RSAKeyValue><Modulus>lMlZCTHRb0DkkFqUzhH7YkjCVPSCX7QP5u4r1dbTXmlByWGgBDcqvp3bNLuWJE+MOAUyB84mSRD8H/7AzLhztFzWtssIrU7rbFdgx+DJVzfHyLfbhwLMr+dG8fREo8/Vz9M+G2if6KQTxJWIyEYSvVK0s7ulbRqu2xm1a1c+N/z45Czjq9s3A5c/PXotPnywkbgq6EMypx2HGy+ckobGITcAyC5Ws7EeoFHZOWK5v/yJbeVIlqWYtqDCeIix+Jcb7y1Tz/zqqR/OFbMKV2drrRpOuXPfN3+Tql1YV4Am6V/4MpJ2p8X9qjdkdcMmPRxSeSwojtb3DgclM7mnm3b/YQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>", xml);
+    }
+
+    [ExcludeFromCodeCoverage]
+    [TestMethod()]
+    public void EnsureIsValidUnknownTest()
+    {
+        rsaKeySetting = new RsaKeySetting()
+        {
+            SourceType = RsaKeySetting.RsaKeyDataSource.Unknown
+            , Source = string.Empty
+        };
+
+        var ex = Assert.ThrowsException<InvalidOperationException>(() => rsaKeySetting.EnsureIsValid());
+
+        Assert.IsNotNull(ex);
+        Assert.AreEqual("SourceType is unknown", ex.Message);
+    }
+
+    [ExcludeFromCodeCoverage]
+    [TestMethod()]
+    public void EnsureIsValidSourceEmptyStringTest()
+    {
+        rsaKeySetting = new RsaKeySetting()
+        {
+            SourceType = RsaKeySetting.RsaKeyDataSource.File
+            ,
+            Source = string.Empty
+        };
+
+        var ex = Assert.ThrowsException<InvalidOperationException>(() => rsaKeySetting.EnsureIsValid());
+
+        Assert.IsNotNull(ex);
+        Assert.AreEqual("Source is null or whitespace", ex.Message);
     }
 
 }
