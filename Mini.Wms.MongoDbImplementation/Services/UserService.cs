@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Mini.Wms.Abstraction.Models;
 using Mini.Wms.Abstraction.Services;
 using Mini.Wms.MongoDbImplementation.Models;
 using MongoDB.Driver;
@@ -88,4 +89,52 @@ public class UserService : IUserService<string, User>
 
         return updateResult;
     }
+
+    public async Task<PagedData<User>> PageAsync(PagedDataOptions pagedDataOptions, CancellationToken cancellationToken = default)
+    {
+        FilterDefinition<User>? filter = Builders<User>.Filter.Exists("i");
+        FilterDefinition<User>? fil = Builders<User>.Filter.Empty;
+        var finalFilter = Builders<User>.Filter.And(filter, fil);
+
+        IList<SortDefinition<User>> sortDefinitionList = new List<SortDefinition<User>>();
+        
+        //(pagedDataOptions.DataFieldList
+        foreach (var field in pagedDataOptions.DataFieldList.OrderBy(r => r.SortOrder))
+        {
+            if (field.SortAscending)
+            {
+                sortDefinitionList.Add(Builders<User>.Sort.Ascending(field.Name));
+            }
+            else
+            {
+                sortDefinitionList.Add(Builders<User>.Sort.Descending(field.Name));
+            }
+        }
+
+        FindOptions<User, User> options = new FindOptions<User, User>();
+        options.Sort = Builders<User>.Sort.Combine(sortDefinitionList);
+        options.Limit = (int)pagedDataOptions.PageSize;
+        options.Skip = (int)((pagedDataOptions.Page - 1) * pagedDataOptions.PageSize);
+
+        long documentCount = await userCollection.CountDocumentsAsync(Builders<User>.Filter.Empty, null, cancellationToken);
+
+        var cursor = await userCollection.FindAsync(Builders<User>.Filter.Empty, options, cancellationToken);
+
+        PagedData<User> pagedData = new()
+        {
+            TotalRecordCount = documentCount,
+            Data = await cursor.ToListAsync(cancellationToken)
+        };
+
+        return pagedData;
+
+        //return await cursor.ToListAsync(cancellationToken);
+    }
 }
+
+//public class PagedData<User>
+//{
+//    public long TotalRecordCount { get; internal set; }
+
+//    public List<User> Data { get; internal set; }
+//}

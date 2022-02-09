@@ -13,6 +13,17 @@ public interface IObjectService<TKey, TObj>
     Task<TObj> GetAsync(TKey id, CancellationToken cancellationToken = default);
 
     Task<TObj> UpdateAsync(TObj user, CancellationToken cancellationToken = default);
+
 }
 
-public interface IUserService<TKey, TObj> : IObjectService<TKey, TObj> where TObj : IUser<TKey> { }
+public interface IPagedService<TObj>
+{
+    Task<PagedData<TObj>> PageAsync(PagedDataOptions pagedDataOptions, CancellationToken cancellationToken = default);
+}
+
+public interface IUserService<TKey, TObj> : 
+    IObjectService<TKey, TObj>,
+    IPagedService<TObj>
+    where TObj : IUser<TKey> 
+{ 
+}
