@@ -44,7 +44,10 @@ public class PagedDataOptions
         {
             foreach (var sv in query["fields"])
             {
-                DataFieldList.Add(new DataField(sv));
+                if (!string.IsNullOrWhiteSpace(sv))
+                {
+                    DataFieldList.Add(new DataField(sv));
+                }
             }
         }
     }
