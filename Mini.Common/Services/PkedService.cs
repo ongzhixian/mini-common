@@ -55,6 +55,7 @@ public class PkedService : IPkedService
         return new EncryptedMessage(iv, encryptedSessionKey, encryptedMessage);
     }
 
+    [ExcludeFromCodeCoverage]
     public async Task<EncryptedMessage> EncryptAsync<T>(T data, string encryptionKeyName, string enclosedPublicKeyName)
     {
         RsaKeySetting recepRsaKeySetting = rsaKeySettingOptions.Get(encryptionKeyName);
@@ -120,6 +121,7 @@ public class PkedService : IPkedService
     }
 }
 
+[ExcludeFromCodeCoverage]
 public record struct PublicKeyEnclosedData<T>(T Data, string PublicKeyXml)
 {
     //DataType = typeof(T).ToString(),
