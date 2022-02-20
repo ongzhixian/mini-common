@@ -1,4 +1,5 @@
-﻿using Mini.Wms.Abstraction.Models;
+﻿using Mini.Common.Models;
+using Mini.Wms.Abstraction.Models;
 
 namespace Mini.Wms.Abstraction.Services;
 
