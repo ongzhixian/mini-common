@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Mini.Common\Mini.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="_Data\UnitTest-PrivateKey.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
