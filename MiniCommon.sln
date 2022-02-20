@@ -12,6 +12,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mini.Wms.MongoDbImplementat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mini.Wms.MongoDbImplementation.Tests", "Mini.Wms.MongoDbImplementation.Tests\Mini.Wms.MongoDbImplementation.Tests.csproj", "{E7331336-D8E0-4D1F-8E7C-8086FAD3109D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mini.Common", "Mini.Common\Mini.Common.csproj", "{383E0EE2-0D86-41FF-924D-A079058A0664}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{E7331336-D8E0-4D1F-8E7C-8086FAD3109D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7331336-D8E0-4D1F-8E7C-8086FAD3109D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7331336-D8E0-4D1F-8E7C-8086FAD3109D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{383E0EE2-0D86-41FF-924D-A079058A0664}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{383E0EE2-0D86-41FF-924D-A079058A0664}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{383E0EE2-0D86-41FF-924D-A079058A0664}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{383E0EE2-0D86-41FF-924D-A079058A0664}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -122,8 +122,10 @@ public class UserService : IUserService<string, User>
 
         PagedData<User> pagedData = new()
         {
-            TotalRecordCount = documentCount,
-            Data = await cursor.ToListAsync(cancellationToken)
+            TotalRecordCount = (ulong)documentCount,
+            Data = await cursor.ToListAsync(cancellationToken),
+            Page = pagedDataOptions.Page,
+            PageSize = pagedDataOptions.PageSize
         };
 
         return pagedData;
