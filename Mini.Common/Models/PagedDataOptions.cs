@@ -44,11 +44,12 @@ public class PagedDataOptions
 
     public string ToQueryString()
     {
-        IList<KeyValuePair<string, StringValues>> qs = new List<KeyValuePair<string, StringValues>>();
-
-        qs.Add(new KeyValuePair<string, StringValues>("page", Page.ToString()));
-        qs.Add(new KeyValuePair<string, StringValues>("page-size", PageSize.ToString()));
-        qs.Add(new KeyValuePair<string, StringValues>("fields", new StringValues(DataFieldList.Select(r => r.ToString()).ToArray())));
+        IList<KeyValuePair<string, StringValues>> qs = new List<KeyValuePair<string, StringValues>>
+        {
+            new KeyValuePair<string, StringValues>("page", Page.ToString()),
+            new KeyValuePair<string, StringValues>("page-size", PageSize.ToString()),
+            new KeyValuePair<string, StringValues>("fields", new StringValues(DataFieldList.Select(r => r.ToString()).ToArray()))
+        };
 
         return QueryString.Create(qs).Value;
     }
