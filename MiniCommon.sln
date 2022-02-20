@@ -8,8 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mini.Wms.Abstraction", "Mini.Wms.Abstraction\Mini.Wms.Abstraction.csproj", "{A22B21B6-B1C3-4510-8698-2E084E1A53F2}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mini.Wms.MongoDbImplementation", "Mini.Wms.MongoDbImplementation\Mini.Wms.MongoDbImplementation.csproj", "{258B500E-66B5-4D9D-9E1F-10D89366FDD0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mini.Wms.MongoDbImplementation.Tests", "Mini.Wms.MongoDbImplementation.Tests\Mini.Wms.MongoDbImplementation.Tests.csproj", "{B596DC83-88EA-4A60-AD83-D0D828DEDBDC}"
@@ -20,10 +18,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A22B21B6-B1C3-4510-8698-2E084E1A53F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A22B21B6-B1C3-4510-8698-2E084E1A53F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A22B21B6-B1C3-4510-8698-2E084E1A53F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A22B21B6-B1C3-4510-8698-2E084E1A53F2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{258B500E-66B5-4D9D-9E1F-10D89366FDD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{258B500E-66B5-4D9D-9E1F-10D89366FDD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{258B500E-66B5-4D9D-9E1F-10D89366FDD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
