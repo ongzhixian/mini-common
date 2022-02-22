@@ -17,7 +17,6 @@ public class UserService : IUserService<string, User>
         this.userCollection = userCollection ?? throw new ArgumentNullException(nameof(userCollection));
     }
 
-
     public async Task AddAsync(User user, CancellationToken cancellationToken = default)
     {
         InsertOneOptions? insertOneOptions = null;
@@ -120,19 +119,25 @@ public class UserService : IUserService<string, User>
 
         var cursor = await userCollection.FindAsync(Builders<User>.Filter.Empty, options, cancellationToken);
 
-        PagedData<User> pagedData = new()
-        {
-            TotalRecordCount = (ulong)documentCount,
-            Data = await cursor.ToListAsync(cancellationToken),
-            Page = pagedDataOptions.Page,
-            PageSize = pagedDataOptions.PageSize
-        };
+        return new PagedData<User>(
+            pagedDataOptions.Page,
+            pagedDataOptions.PageSize,
+            (ulong)documentCount,
+            await cursor.ToListAsync(cancellationToken)
+            );
 
-        return pagedData;
+        //PagedData<User> pagedData = new()
+        //{
+        //    TotalRecordCount = (ulong)documentCount,
+        //    Data = await cursor.ToListAsync(cancellationToken),
+        //    Page = pagedDataOptions.Page,
+        //    PageSize = pagedDataOptions.PageSize
+        //};
+
+        //return pagedData;
 
         //return await cursor.ToListAsync(cancellationToken);
     }
-
 
 }
 
