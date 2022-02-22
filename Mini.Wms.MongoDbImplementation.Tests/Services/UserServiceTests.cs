@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Mini.Common.Models;
 using Mini.Wms.Abstraction.Models;
 using Mini.Wms.MongoDbImplementation.Models;
 using Mini.Wms.MongoDbImplementation.Services;
@@ -153,6 +155,52 @@ public class UserServiceTests
         var result = await userService.UpdateAsync(record);
 
         Assert.IsNotNull(result);
+    }
+
+    [TestMethod()]
+    public async Task PageAsyncTestAsync()
+    {
+        Mock<IAsyncCursor<User>> mockCursor = new Mock<IAsyncCursor<User>>();
+        
+        mockCursor.Setup(m => m.Current).Returns(new List<User>
+        {
+            new User { Username = "someUsername1", FirstName = "someFirstName1", LastName = "someLastName1" },
+            new User { Username = "someUsername2", FirstName = "someFirstName2", LastName = "someLastName2" },
+            new User { Username = "someUsername3", FirstName = "someFirstName3", LastName = "someLastName3" },
+            new User { Username = "someUsername4", FirstName = "someFirstName4", LastName = "someLastName4" }
+        });
+        
+        mockCursor.SetupSequence(m => m.MoveNextAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.FromResult(true))
+            .Returns(Task.FromResult(false));
+        
+        mockUserCollection.Setup(m => m.FindAsync(It.IsAny<FilterDefinition<User>>(),
+            It.IsAny<FindOptions<User, User>>(),
+            It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mockCursor.Object);
+        mockUserCollection.Setup(m => m.CountDocumentsAsync(It.IsAny<FilterDefinition<User>>(),
+            It.IsAny<CountOptions>(),
+            It.IsAny<CancellationToken>()))
+            .ReturnsAsync((long)4);
+
+        UserService userService = new UserService(mockLogger.Object, mockUserCollection.Object);
+
+        PagedDataOptions pagedDataOptions = new PagedDataOptions();
+
+        pagedDataOptions.Page = (uint)1;
+        pagedDataOptions.PageSize = (uint)10;
+        pagedDataOptions.DataType = "User";
+        pagedDataOptions.DataFieldList.Add(new DataField("Username", true, 1));
+        pagedDataOptions.DataFieldList.Add(new DataField("FirstName", true, 2));
+        pagedDataOptions.DataFieldList.Add(new DataField("LastName", true, 3));
+
+        var result = await userService.PageAsync(pagedDataOptions);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual((uint)1, result.Page);
+        Assert.AreEqual((uint)10, result.PageSize);
+        Assert.AreEqual((ulong)4, result.TotalRecordCount);
+        Assert.AreEqual(4, result.Data.Count());
     }
 }
 
